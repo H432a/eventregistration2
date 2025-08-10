@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Community Event Registration</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+    .form-container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin: 10px 0 5px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+    input:invalid, select:invalid, textarea:invalid {
+      border-color: #e74c3c;
+    }
+    .error {
+      color: #e74c3c;
+      font-size: 0.85em;
+      display: none;
+    }
+    .success {
+      border-color: #2ecc71 !important;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #3498db;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #2980b9;
+    }
+  </style>
+</head>
+<body>
+
+<div class="form-container">
+  <h2>Community Event Registration</h2>
+  <form id="registrationForm" novalidate>
+    <label for="name">Full Name *</label>
+    <input type="text" id="name" name="name" required>
+    <div class="error" id="nameError">Please enter your full name (letters only).</div>
+
+    <label for="email">Email *</label>
+    <input type="email" id="email" name="email" required>
+    <div class="error" id="emailError">Enter a valid email address.</div>
+
+    <label for="phone">Phone Number *</label>
+    <input type="text" id="phone" name="phone" required>
+    <div class="error" id="phoneError">Enter a 10-digit phone number.</div>
+
+    <label for="age">Age *</label>
+    <input type="number" id="age" name="age" required>
+    <div class="error" id="ageError">You must be at least 18 years old.</div>
+
+    <label for="event">Select Event *</label>
+    <select id="event" name="event" required>
+      <option value="">--Select an event--</option>
+      <option value="music">Music Concert</option>
+      <option value="art">Art Workshop</option>
+      <option value="tech">Tech Talk</option>
+    </select>
+    <div class="error" id="eventError">Please select an event.</div>
+
+    <label for="comments">Comments (Optional)</label>
+    <textarea id="comments" name="comments" maxlength="200"></textarea>
+
+    <button type="submit">Register</button>
+  </form>
+</div>
+
+<script>
+  const form = document.getElementById('registrationForm');
+  const namePattern = /^[A-Za-z\s]{2,}$/;
+  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|org|net|edu|gov|co|in|us|info|biz|io|ai)$/;
+  const phonePattern = /^[0-9]{10}$/;
+
+  function showError(input, messageId, valid) {
+    const error = document.getElementById(messageId);
+    if (!valid) {
+      input.classList.remove('success');
+      error.style.display = 'block';
+    } else {
+      input.classList.add('success');
+      error.style.display = 'none';
+    }
+  }
+
+  form.addEventListener('input', (e) => {
+    const target = e.target;
+    if (target.id === 'name') {
+      showError(target, 'nameError', namePattern.test(target.value.trim()));
+    } else if (target.id === 'email') {
+      showError(target, 'emailError', emailPattern.test(target.value.trim()));
+    } else if (target.id === 'phone') {
+      showError(target, 'phoneError', phonePattern.test(target.value.trim()));
+    } else if (target.id === 'age') {
+      showError(target, 'ageError', parseInt(target.value) >= 18);
+    } else if (target.id === 'event') {
+      showError(target, 'eventError', target.value !== '');
+    }
+  });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let isValid = true;
+
+    if (!namePattern.test(form.name.value.trim())) { isValid = false; showError(form.name, 'nameError', false); }
+    if (!emailPattern.test(form.email.value.trim())) { isValid = false; showError(form.email, 'emailError', false); }
+    if (!phonePattern.test(form.phone.value.trim())) { isValid = false; showError(form.phone, 'phoneError', false); }
+    if (parseInt(form.age.value) < 18) { isValid = false; showError(form.age, 'ageError', false); }
+    if (form.event.value === '') { isValid = false; showError(form.event, 'eventError', false); }
+
+    if (isValid) {
+      alert('Registration successful!');
+      form.reset();
+      document.querySelectorAll('.success').forEach(el => el.classList.remove('success'));
+    }
+  });
+</script>
+
+</body>
+</html>
